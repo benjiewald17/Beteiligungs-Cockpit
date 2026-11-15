@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% set bereich_ist_intern = false %}
+{% block titel %}{{ t.titel }} – Projektraum{% endblock %}
+{% block inhalt %}
+<h1>{{ t.titel }} <span class="badge {{ t.status|replace(' ', '-')|lower }}">{{ t.status }}</span></h1>
+<div class="panel">
+  <p>{{ t.beschreibung }}</p>
+  <p class="quelle">Quelle: {{ t.quelle or '–' }}</p>
+</div>
+
+<h2>Beiträge zu diesem Thema</h2>
+{% for b in beitraege %}
+<div class="panel">
+  <strong>{{ b.art|capitalize }}</strong> von {{ b.autor }} <span class="meta">· {{ b.eingereicht_am }}</span>
+  <p>„{{ b.text }}“</p>
+  {% if b.rueckmeldung %}
+    <div class="hinweis"><strong>Rückmeldung des Projektteams:</strong><br>{{ b.entscheidung }}
+      {% if b.begruendung %}<br><span class="meta">Begründung: {{ b.begruendung }}</span>{% endif %}</div>
+  {% else %}
+    <p class="meta">Status: {{ b.status }} – Rückmeldung folgt.</p>
+  {% endif %}
+</div>
+{% else %}
+<div class="panel">Zu diesem Thema gibt es noch keine Beiträge.</div>
+{% endfor %}
+
+<h2>Etwas beitragen</h2>
+<div class="panel">
+  <form method="post" action="{{ url_for('beitrag_neu') }}">
+    <input type="hidden" name="thema_id" value="{{ t.id }}">
+    <div class="zeile">
+      <select name="art"><option value="frage">Frage</option>
+        <option value="vorschlag">Vorschlag</option><option value="hinweis">Hinweis</option></select>
+      <input type="text" name="autor" placeholder="Ihr Name (optional)">
+    </div>
+    <textarea name="text" required placeholder="Ihre Frage oder Ihr Vorschlag zu „{{ t.titel }}“ …"></textarea>
+    <div style="margin-top:8px"><button type="submit">Einreichen</button></div>
+  </form>
+</div>
+{% endblock %}

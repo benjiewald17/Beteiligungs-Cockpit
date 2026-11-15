@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% set bereich_ist_intern = true %}
+{% block titel %}Cockpit – Unterlagen{% endblock %}
+{% block inhalt %}
+<h1>Unterlagen &amp; KI-Auswertung</h1>
+<div class="panel">
+  <form class="zeile" method="post" enctype="multipart/form-data">
+    <input type="file" name="datei" required>
+    <button type="submit">Hochladen</button>
+  </form>
+  <p class="meta">PDF, TXT, MD. Bei erneutem Upload desselben Namens wird die Version erhöht.</p>
+</div>
+
+<table>
+  <tr><th>Name</th><th>Version</th><th>Status</th><th>Erkannte Aussagen</th><th>Aktion</th></tr>
+  {% for d in docs %}
+  <tr>
+    <td>{{ d.name }}<br><span class="meta">hochgeladen {{ d.hochgeladen_am }}</span></td>
+    <td>v{{ d.version }}</td>
+    <td>{% if d.ausgewertet %}<span class="badge freigegeben">ausgewertet</span>
+        {% else %}<span class="badge entwurf">nicht ausgewertet</span>{% endif %}</td>
+    <td>{{ d.n_aussagen }}</td>
+    <td>
+      <form method="post">
+        <button class="klein" name="auswerten" value="{{ d.id }}">
+          {% if d.ausgewertet %}Erneut auswerten{% else %}KI-Auswertung starten{% endif %}</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<div class="hinweis">
+  KI-Entwürfe (Themen, Aussagen) erscheinen <b>nicht automatisch</b> im öffentlichen Raum –
+  sie werden unter „Themen &amp; Spielräume“ geprüft und dort einzeln freigegeben.
+</div>
+{% endblock %}

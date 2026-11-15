@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% set bereich_ist_intern = true %}
+{% block titel %}Cockpit – Themen{% endblock %}
+{% block inhalt %}
+<h1>Themen &amp; Handlungsspielräume</h1>
+<p class="meta">Status je Thema: <span class="badge feststehend">feststehend</span>
+<span class="badge in-pruefung">in Prüfung</span> <span class="badge gestaltbar">gestaltbar</span> –
+nur freigegebene Themen sind öffentlich sichtbar.</p>
+
+{% for t in themen %}
+<div class="panel">
+  <form method="post">
+    <input type="hidden" name="thema_id" value="{{ t.id }}">
+    <div class="zwei">
+      <div>
+        <strong>{{ t.titel }}</strong>
+        {% if t.freigegeben %}<span class="badge freigegeben">öffentlich</span>
+        {% else %}<span class="badge entwurf">Entwurf (nicht öffentlich)</span>{% endif %}
+        {% if t.n_beitraege %}<span class="badge ki">{{ t.n_beitraege }} Beitrag(e)</span>{% endif %}
+        <br><span class="quelle">Quelle: {{ t.quelle or '–' }}</span>
+        <textarea name="beschreibung" style="margin-top:8px">{{ t.beschreibung }}</textarea>
+        <input type="text" name="quelle" value="{{ t.quelle }}" style="margin-top:6px" placeholder="Quelle / Kapitel">
+      </div>
+      <div>
+        <label>Status:</label>
+        <select name="status">
+          {% for s in status_themen %}<option value="{{ s }}" {% if s == t.status %}selected{% endif %}>{{ s }}</option>{% endfor %}
+        </select>
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+          <button type="submit">Speichern</button>
+          {% if not t.freigegeben %}
+          <button type="submit" name="freigeben" value="1" class="sekundaer">Freigeben (öffentlich)</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endfor %}
+{% endblock %}

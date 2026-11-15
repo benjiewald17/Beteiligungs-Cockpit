@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% set bereich_ist_intern = true %}
+{% block titel %}Cockpit – Beiträge{% endblock %}
+{% block inhalt %}
+<h1>Beiträge, Fragen &amp; Vorschläge</h1>
+<table>
+  <tr><th>Beitrag</th><th>Art</th><th>Thema</th><th>Status</th><th>Rückmeldung</th><th></th></tr>
+  {% for b in beitraege %}
+  <tr>
+    <td>{{ b.text[:90] }}{% if b.text|length > 90 %} …{% endif %}<br>
+        <span class="meta">{{ b.autor }} · {{ b.eingereicht_am }}</span></td>
+    <td><span class="badge {{ b.art }}">{{ b.art }}</span></td>
+    <td>{{ b.thema_titel or '–' }}</td>
+    <td><span class="badge {{ b.status|replace(' ', '-')|lower }}">{{ b.status }}</span></td>
+    <td>{% if b.rueckmeldung_freigegeben %}<span class="badge freigegeben">öffentlich</span>
+        {% elif b.entscheidung %}<span class="badge entwurf">Entwurf</span>
+        {% else %}<span class="badge neu">offen</span>{% endif %}</td>
+    <td><a class="knopf klein sekundaer" href="{{ url_for('beitrag_detail', beitrag_id=b.id) }}">Öffnen</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

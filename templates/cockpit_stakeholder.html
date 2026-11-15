@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% set bereich_ist_intern = true %}
+{% block titel %}Cockpit – Stakeholder{% endblock %}
+{% block inhalt %}
+<h1>Stakeholder</h1>
+<div class="panel">
+  <form class="zeile" method="post">
+    <input type="text" name="name" placeholder="Name / Organisation" required>
+    <input type="text" name="rolle" placeholder="Rolle / Betroffenheit">
+    <select name="thema_id">
+      <option value="">– kein Thema zugeordnet –</option>
+      {% for t in themen %}<option value="{{ t.id }}">{{ t.titel }}</option>{% endfor %}
+    </select>
+    <button type="submit">Hinzufügen</button>
+  </form>
+</div>
+<table>
+  <tr><th>Name</th><th>Rolle</th><th>Zugeordnetes Thema</th><th></th></tr>
+  {% for s in stakeholder %}
+  <tr>
+    <td>{{ s.name }}</td><td>{{ s.rolle }}</td><td>{{ s.thema_titel or '–' }}</td>
+    <td><form method="post"><button class="klein sekundaer" name="loeschen" value="{{ s.id }}">Entfernen</button></form></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

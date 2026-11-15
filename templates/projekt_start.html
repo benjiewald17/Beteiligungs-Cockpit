@@ -1,0 +1,57 @@
+{% extends "base.html" %}{% set bereich_ist_intern = false %}
+{% block titel %}{{ s.projektname if s else 'Projekt' }} – Öffentlicher Projektraum{% endblock %}
+{% block inhalt %}
+{% if not s %}
+<div class="hinweis">Der öffentliche Projektraum wird gerade vorbereitet. Der Projektteam-Steckbrief
+ist noch nicht freigegeben. (Mitwirkende: im Cockpit unter „Steckbrief“ freigeben.)</div>
+{% else %}
+<div class="helden">
+  <h1>{{ s.projektname }}</h1>
+  <p>{{ s.beschreibung }}</p>
+  <p><strong>{{ s.ort }}</strong> · {{ s.leistung }}</p>
+</div>
+{% endif %}
+
+<h2>Worum es geht – und wo Sie mitreden können</h2>
+<p class="meta">Jedes Thema ist gekennzeichnet: <span class="badge feststehend">feststehend</span>
+= rechtlich/technisch entschieden · <span class="badge in-pruefung">in Prüfung</span>
+= wird gerade geprüft · <span class="badge gestaltbar">gestaltbar</span>
+= hier ist Mitgestaltung realistisch möglich.</p>
+
+{% for t in themen %}
+<div class="panel">
+  <strong><a href="{{ url_for('projekt_thema', thema_id=t.id) }}">{{ t.titel }}</a></strong>
+  <span class="badge {{ t.status|replace(' ', '-')|lower }}">{{ t.status }}</span>
+  <p>{{ t.beschreibung }}</p>
+  <p class="quelle">Quelle: {{ t.quelle or '–' }}</p>
+</div>
+{% else %}
+<div class="panel">Noch keine freigegebenen Themen. Das Projektteam bereitet Inhalte gerade auf.</div>
+{% endfor %}
+
+<h2>Ihr Beitrag</h2>
+<div class="panel">
+  <form method="post" action="{{ url_for('beitrag_neu') }}">
+    <div class="zeile">
+      <select name="art"><option value="frage">Frage</option>
+        <option value="vorschlag">Vorschlag</option><option value="hinweis">Hinweis</option></select>
+      <select name="thema_id">
+        <option value="">– allgemeiner Beitrag –</option>
+        {% for t in themen %}<option value="{{ t.id }}">{{ t.titel }}</option>{% endfor %}
+      </select>
+    </div>
+    <textarea name="text" required placeholder="Ihre Frage, Ihr Vorschlag oder Hinweis …"></textarea>
+    <div class="zeile">
+      <input type="text" name="autor" placeholder="Ihr Name (optional – sonst anonym)">
+      <button type="submit">Beitrag einreichen</button>
+    </div>
+    <p class="meta">Ohne Registrierung. Sie erhalten nach dem Absenden einen Verfolgungs-Link und sehen,
+    was aus Ihrem Beitrag geworden ist.</p>
+  </form>
+</div>
+
+{% if n_beitraege %}
+<p class="meta">Bisher {{ n_beitraege }} Beiträge eingereicht · {{ n_rueck }} davon bereits öffentlich
+beantwortet. Jeder Beitrag erhält eine nachvollziehbare Rückmeldung.</p>
+{% endif %}
+{% endblock %}

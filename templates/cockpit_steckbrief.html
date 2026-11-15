@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% set bereich_ist_intern = true %}
+{% block titel %}Cockpit – Steckbrief{% endblock %}
+{% block inhalt %}
+<h1>Projektsteckbrief <span class="badge {{ 'freigegeben' if s.freigegeben else 'entwurf' }}">
+  {{ 'öffentlich' if s.freigegeben else 'Entwurf (nicht öffentlich)' }}</span></h1>
+<form method="post">
+  <div class="panel">
+    <label>Projektname</label>
+    <input type="text" name="projektname" value="{{ s.projektname }}">
+    <label style="display:block; margin-top:10px">Beschreibung (für Laien verständlich)</label>
+    <textarea name="beschreibung">{{ s.beschreibung }}</textarea>
+    <div class="zwei" style="margin-top:10px">
+      <div><label>Ort / Region</label><input type="text" name="ort" value="{{ s.ort }}"></div>
+      <div><label>Geplante Leistung</label><input type="text" name="leistung" value="{{ s.leistung }}"></div>
+    </div>
+    <div style="margin-top:12px; display:flex; gap:8px">
+      <button type="submit">Entwurf speichern</button>
+      {% if not s.freigegeben %}
+      <button type="submit" name="freigeben" value="1" class="sekundaer">Freigeben (öffentlich)</button>
+      {% endif %}
+    </div>
+  </div>
+</form>
+{% endblock %}
