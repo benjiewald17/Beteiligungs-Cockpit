@@ -1,10 +1,29 @@
 @echo off
 chcp 65001 >nul
 title Beteiligungs-Cockpit
-cd /d "%~dp0"
 
 set PY=python
 where python >nul 2>nul || set PY=py
+
+cd /d "%~dp0"
+if not exist "requirements.txt" (
+  echo ============================================
+  echo   FEHLER: Dateien fehlen in diesem Ordner!
+  echo ============================================
+  echo.
+  echo   Du hast start.bat vermutlich DIREKT IM ZIP-FENSTER gestartet.
+  echo   So geht es richtig:
+  echo.
+  echo   1. ZIP-Datei doppelklicken -^> Button "Alle extrahieren" klicken
+  echo   2. In den NEU ENSTANDENEN Ordner gehen (Beteiligungs-Cockpit-main)
+  echo   3. DORT start.bat doppelklicken
+  echo.
+  echo   Wichtig: Im Ordner muessen app.py, seed.py und requirements.txt
+  echo   zusammen mit start.bat liegen.
+  echo.
+  pause
+  goto ende
+)
 
 echo ============================================
 echo   Beteiligungs-Cockpit wird gestartet ...
