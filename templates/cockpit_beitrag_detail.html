@@ -1,0 +1,46 @@
+{% extends "base.html" %}{% set bereich_ist_intern = true %}
+{% block titel %}Cockpit – Beitrag #{{ b.id }}{% endblock %}
+{% block inhalt %}
+<h1>Beitrag #{{ b.id }} <span class="badge {{ b.art }}">{{ b.art }}</span>
+    <span class="badge {{ b.status|replace(' ', '-')|lower }}">{{ b.status }}</span></h1>
+
+<div class="panel">
+  <p>„{{ b.text }}“</p>
+  <p class="meta">von {{ b.autor }} · eingereicht {{ b.eingereicht_am }}
+     {% if b.thema_titel %} · Thema: {{ b.thema_titel }}{% endif %}</p>
+  <div class="status-spur">
+    <span class="stufe aktiv">Eingereicht</span> →
+    <span class="stufe {% if b.status != 'neu' %}aktiv{% endif %}">In Bearbeitung</span> →
+    <span class="stufe {% if b.status in ('beantwortet','entschieden') %}aktiv{% endif %}">Beantwortet</span> →
+    <span class="stufe {% if b.status == 'entschieden' %}aktiv{% endif %}">Entschieden</span> →
+    <span class="stufe {% if b.rueckmeldung_freigegeben %}aktiv{% endif %}">Öffentlich</span>
+  </div>
+</div>
+
+<form method="post">
+  <input type="hidden" name="beitrag_id" value="{{ b.id }}">
+  <div class="panel">
+    <h2>Aufgabe &amp; Zuständigkeit</h2>
+    <input type="text" name="aufgabe" value="{{ b.aufgabe }}" placeholder="Was ist zu tun?">
+    <input type="text" name="verantwortlich" value="{{ b.verantwortlich }}"
+           placeholder="Verantwortlich" style="margin-top:6px">
+    <div style="margin-top:10px">
+      <label>Status:</label>
+      <select name="status">
+        {% for s in status_beitrag %}<option value="{{ s }}" {% if s == b.status %}selected{% endif %}>{{ s }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Entscheidung &amp; Begründung</h2>
+    <textarea name="entscheidung" placeholder="Entscheidung (was passiert mit dem Vorhaben)">{{ b.entscheidung }}</textarea>
+    <textarea name="begruendung" placeholder="Begründung (worauf stützt sie sich?)" style="margin-top:6px">{{ b.begruendung }}</textarea>
+    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+      <button type="submit">Speichern</button>
+      {% if not b.rueckmeldung_freigegeben %}
+      <button type="submit" name="rueckmeldung_freigeben" value="1" class="sekundaer">Rückmeldung öffentlich freigeben</button>
+      {% else %}<span class="badge freigegeben">Rückmeldung ist öffentlich sichtbar</span>{% endif %}
+    </div>
+  </div>
+</form>
+{% endblock %}

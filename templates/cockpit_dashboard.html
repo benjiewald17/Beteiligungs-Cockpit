@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% set bereich_ist_intern = true %}{% set bereich = "intern" %}
+{% block titel %}Cockpit – Übersicht{% endblock %}
+{% block inhalt %}
+<h1>Projekt-Cockpit · Windpark Hoxberg II</h1>
+<div class="karten">
+  <div class="karte"><div class="zahl">{{ stats.dokumente }}</div><div class="label">Unterlagen</div></div>
+  <div class="karte"><div class="zahl">{{ stats.themen }}</div><div class="label">Themen</div></div>
+  <div class="karte"><div class="zahl">{{ stats.beitraege_neu }}</div><div class="label">Neue Beiträge</div></div>
+  <div class="karte warn"><div class="zahl">{{ stats.freigaben_offen }}</div><div class="label">Freigaben offen</div></div>
+</div>
+
+<h2>Offene Aufgaben (aus Bürgerbeiträgen)</h2>
+{% if aufgaben %}
+<table>
+  <tr><th>Beitrag</th><th>Art</th><th>Status</th><th></th></tr>
+  {% for a in aufgaben %}
+  <tr>
+    <td>{{ a.text[:110] }}{% if a.text|length > 110 %} …{% endif %}<br>
+        <span class="meta">von {{ a.autor }} · {{ a.eingereicht_am }}</span></td>
+    <td><span class="badge {{ a.art }}">{{ a.art }}</span></td>
+    <td><span class="badge {{ a.status|replace(' ', '-')|lower }}">{{ a.status }}</span></td>
+    <td><a class="knopf klein sekundaer" href="{{ url_for('beitrag_detail', beitrag_id=a.id) }}">Bearbeiten</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<div class="panel">Keine offenen Aufgaben – alle Beiträge sind beantwortet.</div>
+{% endif %}
+
+<h2>Kern-Workflow</h2>
+<div class="panel">
+  <div class="status-spur">
+    <span class="stufe aktiv">Frage / Vorschlag</span> →
+    <span class="stufe aktiv">Aufgabe</span> →
+    <span class="stufe aktiv">Status</span> →
+    <span class="stufe aktiv">Entscheidung</span> →
+    <span class="stufe aktiv">Begründung</span> →
+    <span class="stufe aktiv">Öffentliche Rückmeldung</span>
+  </div>
+  <p class="meta">Jeder Beitrag durchläuft diese Spur. Die Rückmeldung erscheint nur nach Freigabe im öffentlichen Raum.</p>
+</div>
+{% endblock %}

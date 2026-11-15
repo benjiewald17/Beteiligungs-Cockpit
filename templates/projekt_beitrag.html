@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% set bereich_ist_intern = false %}
+{% block titel %}Ihr Beitrag – Verbleib{% endblock %}
+{% block inhalt %}
+<h1>Ihr Beitrag <span class="badge {{ b.status|replace(' ', '-')|lower }}">{{ b.status }}</span></h1>
+<div class="panel">
+  <p>„{{ b.text }}“</p>
+  <p class="meta">{{ b.autor }} · eingereicht {{ b.eingereicht_am }} · Beitrags-Nr. {{ b.id }}</p>
+  <div class="status-spur">
+    <span class="stufe aktiv">Eingereicht</span> →
+    <span class="stufe {% if b.status != 'neu' %}aktiv{% endif %}">In Bearbeitung</span> →
+    <span class="stufe {% if b.rueckmeldung %}aktiv{% endif %}">Rückmeldung</span>
+  </div>
+</div>
+
+{% if b.rueckmeldung %}
+<div class="hinweis">
+  <strong>Rückmeldung des Projektteams:</strong><br>{{ b.entscheidung }}
+  {% if b.begruendung %}<br><br><span class="meta">Begründung: {{ b.begruendung }}</span>{% endif %}
+</div>
+{% else %}
+<div class="panel">
+  <p>Ihr Beitrag ist beim Projektteam eingegangen und wird bearbeitet. Sobald eine Entscheidung
+  getroffen und freigegeben ist, erscheint sie hier – mit Begründung.</p>
+  <p class="meta">Tipp: Speichern Sie diese Seite (Beitrags-Nr. {{ b.id }}), um den Verbleib zu verfolgen.</p>
+</div>
+{% endif %}
+<p><a class="knopf sekundaer" href="{{ url_for('projekt') }}">← Zurück zum Projektraum</a></p>
+{% endblock %}

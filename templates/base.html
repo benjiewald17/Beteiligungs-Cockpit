@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titel %}Beteiligungs-Cockpit{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% block bereich %}{% endblock %}">
+<header class="kopf">
+  <div class="kopf-inhalt">
+    <a class="logo" href="{{ url_for('cockpit') if bereich_ist_intern|default(true) else url_for('projekt') }}">
+      <span class="logo-punkt"></span> Beteiligungs-Cockpit
+    </a>
+    <nav>
+      {% if bereich_ist_intern|default(true) %}
+        <a href="{{ url_for('cockpit') }}">Übersicht</a>
+        <a href="{{ url_for('unterlagen') }}">Unterlagen</a>
+        <a href="{{ url_for('themen') }}">Themen &amp; Spielräume</a>
+        <a href="{{ url_for('stakeholder') }}">Stakeholder</a>
+        <a href="{{ url_for('beitraege') }}">Beiträge</a>
+        <a href="{{ url_for('steckbrief') }}">Steckbrief</a>
+        <a class="wechsel" href="{{ url_for('projekt') }}">→ Öffentlicher Raum</a>
+      {% else %}
+        <a href="{{ url_for('projekt') }}">Projekt</a>
+        {% for t in nav_themen|default([]) %}
+          <a href="{{ url_for('projekt_thema', thema_id=t.id) }}">{{ t.titel }}</a>
+        {% endfor %}
+        <a class="wechsel" href="{{ url_for('cockpit') }}">→ Projektteam</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main class="inhalt">
+  {% with meldungen = get_flashed_messages() %}
+    {% for m in meldungen %}<div class="meldung">{{ m }}</div>{% endfor %}
+  {% endwith %}
+  {% block inhalt %}{% endblock %}
+</main>
+<footer class="fuss">
+  MVP-Prototyp · KI strukturiert, Menschen prüfen und entscheiden · Freigaben werden protokolliert
+</footer>
+</body>
+</html>
